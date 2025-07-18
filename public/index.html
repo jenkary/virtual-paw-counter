@@ -73,13 +73,13 @@
   <button id="boopBtn">boop!</button>
   <div id="counter">total boops: 0</div>
 
-  <audio id="popSound" src="mlem.mp3" preload="auto"></audio>
+  <audio id="mlemSound" src="mlem.mp3" preload="auto"></audio>
 
   <script>
     const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host);
     const btn = document.getElementById('boopBtn');
     const counter = document.getElementById('counter');
-    const sound = document.getElementById('popSound');
+    const sound = document.getElementById('mlemSound');
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
