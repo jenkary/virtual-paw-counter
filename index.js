@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const http = require('http').createServer(app);
+const server = require('http').createServer(app); // ← was http, now called server
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ server: http });
+const wss = new WebSocket.Server({ server });
 
 let count = 0;
 
