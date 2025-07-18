@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>wet cat's virtual paw counter!</title>
+  <style>
+    body {
+      background: #fff8f8;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 2rem;
+      overflow: hidden;
+    }
 
+    h1 {
+      font-size: 24px;
+      margin-bottom: 1rem;
+    }
+
+    #boopBtn {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-family: 'arial', monospace;
+      background-color: #fff;
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 0;
+      box-shadow: 2px 2px 0 #000;
+      cursor: pointer;
+      image-rendering: pixelated;
+      transition: all 0.05s ease;
+    }
+
+    #boopBtn:active {
+      box-shadow: none;
+      transform: translate(2px, 2px);
+    }
+
+    #counter {
+      margin-top: 1rem;
+      font-size: 16px;
+    }
+
+    .paw {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      animation: bounceUp 1s ease-out forwards;
+      opacity: 1;
+    }
+
+    @keyframes bounceUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      30% {
+        transform: translateY(-60px) scale(1.2);
+      }
+      60% {
+        transform: translateY(-30px) scale(0.9);
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🐾 virtual paw counter</h1>
+  <button id="boopBtn">boop!</button>
+  <div id="counter">total boops: 0</div>
+
+  <audio id="popSound" src="mlem.mp3" preload="auto"></audio>
+
+  <script>
+    const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host);
+    const btn = document.getElementById('boopBtn');
+    const counter = document.getElementById('counter');
+    const sound = document.getElementById('popSound');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'count') {
+        counter.textContent = `total boops: ${data.count}`;
+        spawnPaws(data.count);
+      }
+    };
+
+    btn.onclick = () => {
+      ws.send(JSON.stringify({ type: 'boop' }));
+      sound.currentTime = 0;
+      sound.play();
+    };
+
+    function spawnPaws(amount) {
+      for (let i = 0; i < amount; i++) {
+        const paw = document.createElement('div');
+        paw.className = 'paw';
+        paw.textContent = '🐾';
+        paw.style.left = Math.random() * window.innerWidth + 'px';
+        paw.style.top = Math.random() * window.innerHeight + 'px';
+        paw.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+        document.body.appendChild(paw);
+        setTimeout(() => paw.remove(), 2000);
+      }
+    }
+  </script>
+</body>
+</html>
